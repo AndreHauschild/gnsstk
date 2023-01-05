@@ -1,1 +1,1 @@
-./build.sh -eux -i ./install -- -DCMAKE_BUILD_TYPE=release
+./build.sh -e -i ./install -- -DCMAKE_BUILD_TYPE=release

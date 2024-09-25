@@ -66,6 +66,7 @@ ENUM_MAPPER(gnsstk::CorrDupHandling, CorrDupHandling, "gnsstk")
 %import "CommonTime.hpp"
 
 %include "SatelliteSystem.hpp"
+%include "SatTimeSystem.hpp"
 %include "CarrierBand.hpp"
 %include "TrackingCode.hpp"
 %include "ObservationType.hpp"
@@ -115,6 +116,8 @@ ENUM_MAPPER(gnsstk::CorrDupHandling, CorrDupHandling, "gnsstk")
 %shared_ptr(gnsstk::TropCorrector<gnsstk::GGHeightTropModel>)
 %shared_ptr(gnsstk::TropCorrector<gnsstk::NeillTropModel>)
 %shared_ptr(gnsstk::TropCorrector<gnsstk::GlobalTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::GCATTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::MOPSTropModel>)
 %shared_ptr(gnsstk::Transformer)
 %shared_ptr(gnsstk::HelmertTransformer)
 
@@ -233,6 +236,8 @@ ENUM_MAPPER(gnsstk::CorrDupHandling, CorrDupHandling, "gnsstk")
 %template(GGHeightTropCorrector) gnsstk::TropCorrector<gnsstk::GGHeightTropModel>;
 %template(NeillTropCorrector) gnsstk::TropCorrector<gnsstk::NeillTropModel>;
 %template(GlobalTropCorrector) gnsstk::TropCorrector<gnsstk::GlobalTropModel>;
+%template(GCATTropCorrector) gnsstk::TropCorrector<gnsstk::GCATTropModel>;
+%template(MOPSTropCorrector) gnsstk::TropCorrector<gnsstk::MOPSTropModel>;
 %include "CorrectionResult.hpp"
 %template(CorrectionResultList) std::list<gnsstk::CorrectionResult>;
 %include "CorrectionResults.hpp"

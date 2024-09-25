@@ -1,3 +1,69 @@
+# Version 14.3.0   Monday December 18, 2023
+
+Modifications by Author
+-----------------------
+     Brent Renfro <renfrob@arlut.utexas.edu> (1):
+           Correcting CNAV weekrollover issue
+
+     John Knutson <johnk@arlut.utexas.edu> (1):
+           Allow the SP3NavDataFactory to initialize OrbitDataSP3 fields to NaN or whatever
+
+     Jon Little <littlej@arlut.utexas.edu> (1):
+           Resolve "Testing sem and al3 support"
+
+     Sarah Magliocca <magliocca@arlut.utexas.edu> (1):
+           Replacing Brian Tolman as a CODEOWNER with GNSS Geospatial PO and others
+
+     Taben Malik <malik@arlut.utexas.edu> (8):
+           Making gnsstk_enable.sh POSIX compliant for wider support.
+           Update gnsstk_enable.sh
+           Discovered and fixed bug in PackedNavBits
+           Parse Galileo I/NAV page pairs in PNB factory.
+           Removing breaking CPP 17 feature
+           Removing special c++17 packages as they are no longer needed
+           Fix PackedNavBits segfaults
+           Introduce PNB method to add int8_t bit vector
+
+
+
+# Version 14.2.0   Friday August 11, 2023
+
+Modifications by Author
+-----------------------
+     Benjamin Glass <bglass@arlut.utexas.edu> (3):
+           build.sh: Opportunistically use Ninja, when available
+           SEMNavDataFactory: bugfixes
+           Add GPS SV config message to NewNav
+
+     Brent Renfro <renfrob@arlut.utexas.edu> (1):
+           Issue 509 bei dou end fit
+
+     David Barber <dbarber@arlut.utexas.edu> (2):
+           Update submodule data reference
+           create debian/ubuntu major version coinstallable package
+
+     John Knutson <johnk@arlut.utexas.edu> (3):
+           Add support for arbitrary C++ standards to the build, and specific CI builds for C++17 under ubuntu
+           Changes in support of CSMS.
+           Add support for norad IDs in SatID for those compilers that support c++17 or later
+
+     Taben Malik <malik@arlut.utexas.edu> (2):
+           Fix a sign convention for time offsets.
+           Missed a few sign convention changes
+
+
+
+# Version 14.1.0   Monday February 27, 2023
+
+Modifications by Author
+-----------------------
+     Taben Malik <malik@arlut.utexas.edu> (3):
+           Hiding link from pydata-sphinx-theme due to browser incompatibilities
+           Missing TropCorrectors in SWIG
+           PRSolution Cleanup
+
+
+
 # Version 14.0.0   Tuesday December 20, 2022
 
 Modifications by Author

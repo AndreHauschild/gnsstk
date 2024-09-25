@@ -1071,7 +1071,10 @@ package_ubuntu_20.04:
     # Mark the debian log so that this package is a backport.
     # Use the most recent Maintainer as current maintainer.
     - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
-    - dch --bpo "No Changes" && dch  -l "ubuntu" -D focal 'No Changes' -u low
+    # Increment release number so c++11 compiled package gets installed by default over c++17 compiled package
+    - dch -q "No Changes"
+    # defaults to using c++11 standard
+    - dch --bpo "No Changes" && dch  -l "cpp11ubuntu" -D focal 'No Changes' -u low
     - if [ "$BUILD_TYPE" == "debug" ]; then BUILD_PROFILES="pkg_python,debug_package"; else BUILD_PROFILES="pkg_python"; fi
     - dpkg-buildpackage --build-profiles=${BUILD_PROFILES} -us -uc -d --changes-option="-DDistribution=focal-sgl"
     - mkdir debs
@@ -1216,8 +1219,11 @@ deploy_debian_10:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
-    - cd debs
+    - pushd debs
     - sudo apt-get -y install ./*.deb
+    - popd
+    # source gnsstk's enable script
+    - source /etc/profile.d/gnsstk_enable.sh
     - python3 -c "import gnsstk"
     - df_diff -h
     - gnsstk-config --includedir
@@ -1232,8 +1238,11 @@ deploy_debian_11:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
-    - cd debs
+    - pushd debs
     - apt-get -y install ./*.deb
+    - popd
+    # source gnsstk's enable script
+    - source /etc/profile.d/gnsstk_enable.sh
     - python3 -c "import gnsstk"
     - df_diff -h
     - gnsstk-config --includedir
@@ -1248,8 +1257,11 @@ deploy_ubuntu_20.04:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
-    - cd debs
+    - pushd debs
     - apt-get -y install ./*.deb
+    - popd
+    # source gnsstk's enable script
+    - source /etc/profile.d/gnsstk_enable.sh
     - python3 -c "import gnsstk"
     - df_diff -h
     - gnsstk-config --includedir
@@ -1293,7 +1305,7 @@ push_artifacts:
   variables:
     DEB_10_PACKAGES: "debs/*bpo10+1_amd64.deb"
     DEB_11_PACKAGES: "debs/*bpo11*.deb"
-    UBU_20_PACKAGES: "debs/*bpo10+1ubuntu*.deb"
+    UBU_20_PACKAGES: "debs/*bpo10+1*ubuntu*.deb"
   stage: push
   needs: [package_conda, package_debian_10, package_debian_11, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
   dependencies: [package_conda, package_debian_10, package_debian_11, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]

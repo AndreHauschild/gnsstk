@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 14.0.0
+%define version 14.3.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,39 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec 18 2023 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v14.3.0 release
+- Add tests for sem and al3 files.
+- Add addBitVec method to PackedNavBits to allow easy packing of an array of 0/1 ints.
+- Fix PackedNavBits segfaulting when add more bits beyond its initial capacity.
+- Update Removing special c++17 packages as they are no longer needed
+- Update removed c++17 features due to segfaults.
+- Update codeowners file to replace contributors that left
+- Fix PNBGPSCNavDataFactory.cpp Fix weekrollover problem_
+- Add Galileo I/NAV page pair parsing to PNB factory.
+- Fix bug in PackedNavBits.addDataVec that would drop the last byte of data.
+- Update gnsstk_enable.sh to be POSIX compliant for wider support.
+- Add the ability for SP3NavDataFactory to initialize OrbitDataSP3 fields to NaN or whatever
+* Fri Aug 11 2023 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v14.2.0 release
+- Update create debian/ubuntu major version coinstallable package
+- Add support for norad IDs in SatID for those compilers that support c++17 or later
+- Fix gnsstk data submodule reference
+- Changes in support of CSMS
+- Update BDSD?NavEph.cpp Modified end fit determination
+- Fix a few sign convention changes
+- Fix time offset sign convention to be consistent between BasicTimeSystemConverter and the NavTimeSystemConverter.
+- Add GPS SV config message to NewNav
+- Fix SEMNavDataFactory orbital inclination rate of change
+- Fix SEM NavData system value
+- Update build.sh to opportunistically use Ninja
+- Add support for specifying which c++ standard to use when compiling with g++
+* Mon Feb 27 2023 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v14.1.0 release
+- Update refactor PRSolution to update style and decompose large functions.
+- Add SWIG bindings for MOPS and GCAT TropModel correctors.
+- Fix swig4.0 compile time issues.
+- Fix sphinx docs hidden navigation bar
 * Tue Dec 20 2022 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v14.0.0 release
 - Update NewNav docs

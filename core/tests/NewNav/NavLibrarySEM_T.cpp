@@ -151,7 +151,8 @@ public:
    unsigned getHealthTest();
    unsigned findTest();
    unsigned getTimeTest();
-   unsigned epochTest();
+   unsigned getTimeTestDeprecated();
+   unsigned epochTestDeprecated();
    unsigned getAvailableSatsTest();
    unsigned isPresentTest();
 
@@ -179,6 +180,10 @@ unsigned NavLibrary_T ::
    std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() + fn;
    TUCATCH(navLib.addFactory(ndfp));
    SEMTestFactory *rndfp = dynamic_cast<SEMTestFactory *>(ndfp.get());
+
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   rndfp->setRefEpoch(epoch);
+   
    TUASSERT(rndfp->addDataSource(fname));
    // navLib.dump(std::cout, gnsstk::DumpDetail::Full);
    gnsstk::NavSatelliteID sat(5, 5, gnsstk::SatelliteSystem::GPS,
@@ -186,12 +191,12 @@ unsigned NavLibrary_T ::
                               gnsstk::NavType::GPSLNAV);
    TUASSERT(navLib.getXvt(sat, toa, xvt, gnsstk::SVHealth::Any));
    // @note These values have not been checked for truth..
-   TUASSERTFE(-14234732.713211029768, xvt.x[0]);
-   TUASSERTFE(-22065282.948710985482, xvt.x[1]);
-   TUASSERTFE(4276699.0422724094242, xvt.x[2]);
-   TUASSERTFE(48.302306319750684338, xvt.v[0]);
-   TUASSERTFE(-658.18099556502488667, xvt.v[1]);
-   TUASSERTFE(-3055.0896705668619688, xvt.v[2]);
+   TUASSERTFEPS(-14234732.713211029768, xvt.x[0], 1e-6);
+   TUASSERTFEPS(-22065282.948710985482, xvt.x[1], 1e-6);
+   TUASSERTFEPS(4276699.0422724094242, xvt.x[2], 1e-6);
+   TUASSERTFEPS(48.302306319750684338, xvt.v[0], 1e-9);
+   TUASSERTFEPS(-658.18099556502488667, xvt.v[1], 1e-9);
+   TUASSERTFEPS(-3055.0896705668619688, xvt.v[2], 1e-9);
    TUASSERTFE(2.1934509277344000722e-05, xvt.clkbias);
    TUASSERTFE(1.0913936421274999914e-11, xvt.clkdrift);
    TUASSERTFE(-1.7127699037179789504e-08, xvt.relcorr);
@@ -211,6 +216,10 @@ unsigned NavLibrary_T ::
    std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() + fn;
    TUCATCH(navLib.addFactory(ndfp));
    SEMTestFactory *rndfp = dynamic_cast<SEMTestFactory *>(ndfp.get());
+
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   rndfp->setRefEpoch(epoch);
+
    TUASSERT(rndfp->addDataSource(fname));
    gnsstk::NavSatelliteID sat(10, 10, gnsstk::SatelliteSystem::GPS,
                               gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
@@ -230,6 +239,9 @@ unsigned NavLibrary_T ::
    gnsstk::NavDataPtr ndp;
    TUCATCH(navLib.addFactory(ndfp));
    SEMTestFactory *rndfp = dynamic_cast<SEMTestFactory *>(ndfp.get());
+
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   rndfp->setRefEpoch(epoch);
    TUASSERT(rndfp->addDataSource(fname));
    gnsstk::NavSatelliteID sat(10, 10, gnsstk::SatelliteSystem::GPS,
                               gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
@@ -241,7 +253,6 @@ unsigned NavLibrary_T ::
                         gnsstk::NavSearchOrder::User));
    alm = dynamic_cast<gnsstk::GPSLNavAlm *>(ndp.get());
    TUASSERT(alm != nullptr);
-   alm->dump(std::cout, gnsstk::DumpDetail::Full);
 
    TUASSERT(!navLib.find(nmida, ts,
                          ndp, gnsstk::SVHealth::Any,
@@ -275,14 +286,38 @@ unsigned NavLibrary_T ::
    std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() + fn;
    TUCATCH(navLib.addFactory(ndfp));
    SEMTestFactory *rndfp = dynamic_cast<SEMTestFactory *>(ndfp.get());
+
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   rndfp->setRefEpoch(epoch);
+
    TUASSERT(rndfp->addDataSource(fname));
    TUASSERTE(gnsstk::CommonTime, ts, navLib.getInitialTime());
    TUASSERTE(gnsstk::CommonTime, te, navLib.getFinalTime());
    TURETURN();
 }
 
+/// This is testing using the deprecated use of gnsstk::SEMHeader::nearFullWeek
+/// and thus does not call \ref setRefEpoch(epoch);
 unsigned NavLibrary_T ::
-    epochTest()
+    getTimeTestDeprecated()
+{
+   TUDEF("NavLibrarySEM", "getTime");
+   gnsstk::NavLibrary navLib;
+   gnsstk::NavDataFactoryPtr ndfp(std::make_shared<SEMTestFactory>());
+   std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() + fn;
+   TUCATCH(navLib.addFactory(ndfp));
+   SEMTestFactory *rndfp = dynamic_cast<SEMTestFactory *>(ndfp.get());
+
+   TUASSERT(rndfp->addDataSource(fname));
+   TUASSERTE(gnsstk::CommonTime, ts, navLib.getInitialTime());
+   TUASSERTE(gnsstk::CommonTime, te, navLib.getFinalTime());
+   TURETURN();
+}
+
+/// This is testing using the deprecated use of gnsstk::SEMHeader::nearFullWeek
+/// and thus does not call \ref setRefEpoch(epoch);
+unsigned NavLibrary_T ::
+    epochTestDeprecated()
 {
    TUDEF("NavLibrarySEM", "epoch");
    gnsstk::SEMHeader::nearFullWeek = 1024 + ws.week;
@@ -309,6 +344,10 @@ unsigned NavLibrary_T ::
    gnsstk::NavSatelliteIDSet satset;
    TUCATCH(uut.addFactory(ndfp));
    SEMTestFactory *rndfp = dynamic_cast<SEMTestFactory *>(ndfp.get());
+
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   rndfp->setRefEpoch(epoch);
+
    TUASSERT(rndfp->addDataSource(fname));
    TUCATCH(satset = uut.getAvailableSats(
                gnsstk::CommonTime::BEGINNING_OF_TIME,
@@ -329,6 +368,10 @@ unsigned NavLibrary_T ::
    // really basic tests, the real tests are in NavDataFactoryWithStore_T etc
    TUCATCH(uut.addFactory(ndfp));
    SEMTestFactory *rndfp = dynamic_cast<SEMTestFactory *>(ndfp.get());
+
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   rndfp->setRefEpoch(epoch);
+
    TUASSERT(rndfp->addDataSource(fname));
    gnsstk::NavSatelliteID sat1(gnsstk::SatID(23, gnsstk::SatelliteSystem::GPS));
    gnsstk::NavMessageID nmid1e(sat1, gnsstk::NavMessageType::Ephemeris),
@@ -351,7 +394,8 @@ int main()
    errorTotal += testClass.getHealthTest();
    errorTotal += testClass.findTest();
    errorTotal += testClass.getTimeTest();
-   errorTotal += testClass.epochTest();
+   errorTotal += testClass.getTimeTestDeprecated();
+   errorTotal += testClass.epochTestDeprecated();
    errorTotal += testClass.getAvailableSatsTest();
    errorTotal += testClass.isPresentTest();
    /// @todo test edit(), clear()

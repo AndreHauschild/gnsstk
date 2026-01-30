@@ -1,36 +1,46 @@
-GNSSTk 14.3.0 Release Notes
+GNSSTk 15.0.0 Release Notes
 ========================
 
- * This release includes the following:
-   * Adding the ability for SP3NavDataFactory to initialize OrbitDataSP3 fields to NaN or whatever.
-   * Adding Galileo I/NAV page pair parsing to PNB factory.
-   * Adding addBitVec method to PackedNavBits to allow easy packing of an array of 0/1 ints.
- * Additionally, it contains several bug fixes and build system updates.
+ * This release introduces a major update to the toolkit.
+ * It includes the following:
+   * Adding std C++17 support while deprecating std C++11 support. (**api breaking**)
+   * Updating MultiFormatNavDataFactory and PNBMultiGNSSNavDataFactory to allow multiple independent instances. (**api breaking**)
+   * Updating  GNSSconstants Align PI, TWO_PI, SQRT_PI to the exact specification of the IS-GPS-200
+ * Additionally, it contains bug fixes updates and build CI/CD updates.
 
-Updates since v14.2.0
+Updates since v14.6.0
 ---------------------
 
+**Known Issues**
+  * Some distributions (such as RHEL 8) may support different versions of gcc (such as gcc 8.x and 9.x but gcc 8.x is the default). A version of gcc (such as gcc 9 on RHEL 8) that supports C++17 and the C++17 ABI is stable must be chosen to build. Note that gcc 8.x on RHEL 8 may support some C++17 but the C++17 ABI is not stable and thus should not be used.
+  * Support for MSVC14 (Microsoft Visual Studio 14) and older compilers is removed. Only Microsoft Visual Studio 19 and newer versions are supported.
+
 **Build System and Test Suite**
-  * Add tests for sem and al3 files (See New Modules below).
-  * Update gnsstk_enable.sh to be POSIX compliant for wider support.
-  * Update Removing special c++17 packages as they are no longer needed.
+  * Fix df_diff comparisons, off-by-one error, and cmake test usage of df_diff.
 
 **Gitlab CI**
-  * Update codeowners file to replace contributors that left
+  * Update Fortify pipeline scan job
+  * Update submodule ref to point to latest gnsstk-data merge
+  * Fix gitlab pipeline jobs retry for only system failures.
+  * Fix Fortify pipeline retry condition
 
 **Library Changes**
-  * Add the ability for SP3NavDataFactory to initialize OrbitDataSP3 fields to NaN or whatever
-  * Add Galileo I/NAV page pair parsing to PNB factory.
-  * Add addBitVec method to PackedNavBits to allow easy packing of an array of 0/1 ints.
+  * Add C++17 support for Toolkits
+  * Update MultiFormatNavDataFactory and PNBMultiGNSSNavDataFactory to allow multiple independent instances.
+  * Update GNSSconstants Align PI, TWO_PI, SQRT_PI to the exact specification of the IS-GPS-200
 
-Fixes since v14.2.0
+Fixes since v14.6.0
 --------------------
-  * Fix bug in PackedNavBits.addDataVec that would drop the last byte of data.
-  * Fix PNBGPSCNavDataFactory.cpp Fix weekrollover problem.
-  * Fix PackedNavBits segfaulting when add more bits beyond its initial capacity.
-  * Removed c++17 features due to segfaults.
+  * Fix EngNav such that subframe pattern ID look-ups disallow unassigned SV ID values.
+  * Fix PNBBDSD1NavDataFactory Change SOW cracking from asSignedDouble() to asUnsignedInt()
+  * Fix SNAPPER Check ptr for null before calling string constructor. Running SNAPPER with lambda in cloud doesn't have the env variable $HOME by default
+  * Fix GPSLNavEph fit interval computation.
+  * Fix correct destruction of NavData with virtual destructor
+
+Removed Code due to Deprecation
+-------------------------------
+  * No longer build and publish packages with std C++11
 
 New Modules
 -------------------------------
-     core/tests/NewNav/NavLibrarySEM_T.cpp
-     core/tests/NewNav/NavLibraryYuma_T.cpp
+     core/tests/GNSSCore/GNSSconstants_T.cpp
